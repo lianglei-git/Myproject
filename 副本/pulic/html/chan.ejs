@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/fonts1/iconfont.css">
+    <link rel="stylesheet" href="../css/animation.css">
+</head>
+
+<body>
+    <div class="index-container">
+        <nav>
+            <div class="header">
+                <span>产品管理员</span>
+                <div class="header">
+                    <span>产品管理员</span>
+                    <ul>
+                        <li>
+                            <a href="/">
+                                <span class="iconfont">&#xeb94;</span>
+                                <span>仪表板</span>
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a href="/chan">
+                                <span class="iconfont">&#xe647;</span>
+                                <span>报告
+                                    <i class="iconfont icon">&#xe62c;</i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/personal">
+                                <span class="iconfont">&#xf0179;</span>
+                                <span>制品</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <span class="iconfont">&#xe678;</span>
+                                <span>账号</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/five">
+                                <span class="iconfont">&#xe706;</span>
+                                <span>设置</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="header-rigth">
+                        <span>管理员，退出</span>
+                    </div>
+                </div>
+                <div class="header-rigth">
+                    <span>管理员，退出</span>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="products">
+        <div class="box">
+            <div class="header">
+                <h3>添加产品</h3>
+            </div>
+            <div class="section">
+                <div class="section-left">
+                    <div class="pro">
+                        <label>产品名称</label>
+                        <input type="text" id="productName">
+                    </div>
+                    <div class="note">
+                        <label>描述</label>
+                        <textarea name="" cols="30" rows="10" id="detalied"></textarea>
+                    </div>
+                    <div class="list">
+                        <label for="">类别</label>
+                        <select name="" id="">
+                            <option value="">选择类别</option>
+                            <option value="">选择类别</option>
+                            <option value="">选择类别</option>
+                            <option value="">选择类别</option>
+                        </select>
+                    </div>
+                    <div class="title">
+                        <div class="date">
+                            <label>到期日期</label>
+                            <input type="text" id="newdate">
+                        </div>
+                        <div class="unit">
+                            <label>库存中的单位</label>
+                            <input type="text" id="util">
+                        </div>
+                    </div>
+                </div>
+                <div class="section-right">
+                    <div class="section-right-img">
+                        <img src="../image/a99448d1526dae883eb16ffe3b435795.jpg" alt="" id="pircor"
+                            style="width: 445px;height: 300px">
+                        <i class="iconfont icon-01"></i>
+                    </div>
+                    <div class="section-right-note">
+
+                        <h3 style="position: relative;"><input id="picurlr" type="file" style="position: absolute;top: 0;
+                        left: 0;width: 100%;height: 100%; opacity: 0;">上传产品图片</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <h3 id="footPro">立即添加产品</h3>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function picpost(url, data, callback) {
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                callback && callback(xhr.responseText);
+            }
+        }
+        xhr.open('POST', url);
+        xhr.send(data);
+    }
+
+    // 产品名称
+    var productName = document.getElementById('productName');
+    //描述
+    var detalied = document.getElementById('detalied');
+    //日期
+    var newdate = document.getElementById('newdate')
+    //库中的·单位
+    var util = document.getElementById('util');
+    //上传的图片
+    var picurlr = document.getElementById('picurlr');
+    var form = new FormData();
+    picurlr.onchange = function () {
+        form.append('productUrl', this.files[0]);
+        // picpost('/api/product', form, (data) => {
+        //     setTimeout(() => {
+        //         pircor.src = JSON.parse(data).URL
+        //         console.log("图片上传成功")
+        //     }, 1000)
+        // })
+    }
+    footPro.onclick = function () {
+        var productNameValue = productName.value;
+        var detaliedValue = detalied.value;
+        var newdateValue = newdate.value;
+        var utilValue = util.value;
+        form.append('productNameValue', productNameValue);
+        form.append('detaliedValue', detaliedValue);
+        form.append('newdateValue', newdateValue);
+        form.append('utilValue', utilValue);
+        picpost('/api/product', form, (data) => {
+            setTimeout(() => {
+                pircor.src = JSON.parse(data).URL ? JSON.parse(data).URL : pircor.src;
+                console.log("全部上传完成")
+            }, 1000)
+            setTimeout(() => {
+                location.href = JSON.parse(data).redirect;
+            }, 2000);
+            localStorage.setItem('oldid', JSON.parse(data).id)
+            console.log(JSON.parse(data).id, "cookite的ID")
+        })
+        footPro.onclick = null;
+    }
+</script>
+
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>home</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <!-- <link rel="stylesheet" href="../js/flexible.css"> -->
+    <link rel="stylesheet" href="../css/fonts1/iconfont.css">
+    <link rel="stylesheet" href="../css/animation.css">
+</head>
+
+<body>
+
+    <div class="index-container">
+        <nav>
+            <div class="header">
+                <span>产品管理员</span>
+                <ul>
+                    <li>
+                        <a href="/">
+                            <span class="iconfont">&#xeb94;</span>
+                            <span>仪表板</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/chan">
+                            <span class="iconfont">&#xe647;</span>
+                            <span>报告
+                                <i class="iconfont icon">&#xe62c;</i>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="/personal">
+                            <span class="iconfont">&#xf0179;</span>
+                            <span>制品</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="">
+                            <span class="iconfont">&#xe678;</span>
+                            <span>账号</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/five">
+                            <span class="iconfont">&#xe706;</span>
+                            <span>设置</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="header-rigth">
+                    <span>管理员，退出</span>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- 个人信息 -->
+    <div class="personal-data">
+        <div class="account">
+            <h2>账户清单</h2>
+            <h3>账号</h3>
+            <!-- <input type="text" list="fruit" placeholder="选择账号">
+            <datalist id="fruit">
+                <option value="商家"></option>
+                <option value="本人"></option>
+                <option value="选中产品"></option>
+            </datalist> -->
+            <select name="" id="">
+                <option value="">商家</option>
+                <option value="">本人</option>
+                <option value="">选中产品</option>
+            </select>
+        </div>
+        <div class="means">
+            <div class="left-data">
+                <h1>改变头像</h1>
+                <div class="img-me">
+                    <!-- // 活的 -->
+                    <img id="Myimg" src="../image/a99448d1526dae883eb16ffe3b435795.jpg" alt="">
+                </div>
+                <span class="unloap" style="position: relative">
+                    上传新照片 <input type="file" id="file"
+                        style="position:absolute;top: 0;width: 100%;height: 35px;left: 0;opacity: 0;">
+                </span>
+            </div>
+            <div class="right-data">
+                <h1>账号设定</h1>
+                <form action="">
+                    <label for="">用户名<input type="text" id="user"></label>
+                    <label for="">账户电子邮件<input type="text" id="e-medu"></label>
+                    <label for="">密码<input type="text" id="old-password"></label>
+                    <label for="">重新输入密码<input type="text" id="new-password"></label>
+                    <label for="">电话<input type="text" id="phone"></label>
+                    <span class="me-IT" id="meIT">更新您的个人资料</span>
+                </form>
+                <p class="delect-user" id="deleteUser">删除您的用户</p>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+<!-- <script src="../js/index.js"></script> -->
+<script>
+    // 图品上传的
+
+    function picpost(url, data, callback) {
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                callback && callback(xhr.responseText);
+            }
+        }
+        xhr.open('POST', url);
+        xhr.send(data);
+    }
+
+    // 更新个人信息的
+
+    function aPost(url, data, callback) {
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                callback && callback(xhr.responseText);
+            }
+        }
+        xhr.open('POST', url);
+        let newData = Object.keys(data).map(key => key + '=' + data[key]).join('&');
+        // console.log(newData);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(newData);
+    }
+
+    // 图片保存到form对象中 利用ajax发送数据form到后端 利用数据库保存图片地址 
+    file.onchange = function () {
+        let form = new FormData(); // 空对象
+
+        form.append('userpic', this.files[0]) // 以key value 存入对象
+
+        form.append('userId', localStorage.getItem('userid'))
+
+        // console.log(this.files[0])
+
+        picpost('/api/v1/appPic', form, function (data) {
+            // console.log(data.imgPic)
+            var data = JSON.parse(data)
+            console.log(data.imgId)
+            if (data.status === 0) {
+
+                console.log('123444555');
+
+                setTimeout(function () {
+                    let img = new Image();
+                    img.src = data.imgPic;
+                    img.onerror = function (err) {
+                        console.log(err);
+                        console.log('12345');
+                    }
+                    Myimg.src = data.imgPic;
+
+                }, 1000)
+            }
+        })
+    };
+
+    // 自动读取文件的
+    aPost('/api/mysqlPic', {}, (data) => {
+        var data = JSON.parse(data);
+        setTimeout(function () {
+            Myimg.src = data[0].userpic ? data[0].userpic : Myimg.src;
+        }, 1000)
+    });
+    
+    var email = document.getElementById('e-medu');
+    var onePassword = document.getElementById('old-password')
+    var twoPassword = document.getElementById('new-password')
+    var phone = document.getElementById('phone')
+    var user = document.getElementById('user')
+
+    meIT.onclick = function () {
+            var uesrValue = user.value;
+            var emailValue = email.value;
+            var onePasswordValue = onePassword.value;
+            var twoPasswordValue = twoPassword.value;
+            var phoneValue = phone.value;
+            // console.log(uesrValue, emailValue, onePasswordValue, twoPasswordValue, phoneValue)
+            aPost('/api/gengxin', {
+                    uesrValue,
+                    emailValue,
+                    onePasswordValue,
+                    twoPasswordValue,
+                    phoneValue,
+                }, (data) => {
+                    alert(data)
+                })
+            }
+
+    deleteUser.onclick = function(){
+        aPost('/api/delete', {}, (data) => {
+            console.log(data)
+            var data = JSON.parse(data)
+            location.href = data.redirect   
+            alert(data.title)
+        })
+    }
+</script>
+
+</html>
