@@ -35,7 +35,7 @@ requireDir(module, './route', {
 })
 
 
-console.log("第一次提交")
+let a = 1+1;
 
 app.listen(port, () => {
     console.log("服务启动成功:" + port)
