@@ -14,6 +14,9 @@ const requireDir = require('require-directory');  //
 
 var app = new Koa();
 
+var i = 1;
+var j = 2;
+
 const {
     port
 } = require('./config')
@@ -35,7 +38,10 @@ requireDir(module, './route', {
 })
 
 
-console.log("第一次提交")
+console.log("我要冲突")
+
+
+console.log("我想有点冲突")
 
 app.listen(port, () => {
     console.log("服务启动成功:" + port)
